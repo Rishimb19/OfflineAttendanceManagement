@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Attendance{% endblock %}
+{% block content %}
+<h1>Attendance Management</h1>
+
+<!-- Tab navigation -->
+<div class="tab-nav">
+    <button class="tab-link active" onclick="openTab(event, 'individual')">Individual Marking</button>
+    <button class="tab-link" onclick="openTab(event, 'bulk')">Bulk Marking</button>
+</div>
+
+<!-- Individual Marking Tab -->
+<div id="individual" class="tab-content active">
+    <div class="form-card">
+        <h3>Mark Individual Attendance</h3>
+        <form method="POST" action="{{ url_for('attendance') }}">
+            <div class="form-group">
+                <label for="student_id">Student</label>
+                <select id="student_id" name="student_id" required>
+                    <option value="">-- Select Student --</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.usn }} - {{ student.name }} ({{ student.class }}/{{
+                        student.department }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status" required>
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" value="{{ today }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Mark Attendance</button>
+        </form>
+    </div>
+</div>
+
+<!-- Bulk Marking Tab (link to separate page) -->
+<div id="bulk" class="tab-content">
+    <div class="form-card">
+        <h3>Bulk Attendance Marking</h3>
+        <p>Click the button below to mark attendance for multiple students at once, with optional class/department
+            filters.</p>
+        <a href="{{ url_for('bulk_attendance') }}" class="btn btn-primary">Go to Bulk Attendance</a>
+    </div>
+</div>
+
+<h2>Attendance History</h2>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Class</th>
+                <th>Department</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in history %}
+            <tr>
+                <td>{{ record.name }}</td>
+                <td>{{ record.class }}</td>
+                <td>{{ record.department }}</td>
+                <td>{{ record.date }}</td>
+                <td><span class="badge {{ 'badge-present' if record.status == 'Present' else 'badge-absent' }}">{{
+                        record.status }}</span></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">No attendance records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+<!-- templates/dashboard.html -->
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="cards">
+    <div class="card">
+        <h3>Total Students</h3>
+        <p class="card-value">{{ total_students }}</p>
+    </div>
+    <div class="card">
+        <h3>Attendance Records</h3>
+        <p class="card-value">{{ total_attendance }}</p>
+    </div>
+    <div class="card">
+        <h3>Present</h3>
+        <p class="card-value">{{ present_count }}</p>
+    </div>
+    <div class="card">
+        <h3>Absent</h3>
+        <p class="card-value">{{ absent_count }}</p>
+    </div>
+    <div class="card">
+        <h3>Overall Attendance</h3>
+        <p class="card-value">{{ overall_percent }}%</p>
+    </div>
+</div>
+<!-- Inside the cards div, add -->
+<div class="card">
+    <h3>Total Tasks</h3>
+    <p class="card-value">{{ total_tasks }}</p>
+</div>
+<div class="card">
+    <h3>Completed Tasks</h3>
+    <p class="card-value">{{ completed_tasks }}</p>
+</div>
+<div class="recent-section">
+    <h2>Recent Attendance</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in recent %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.date }}</td>
+                <td><span class="badge {{ 'badge-present' if row.status == 'Present' else 'badge-absent' }}">{{
+                        row.status }}</span></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3">No recent attendance.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

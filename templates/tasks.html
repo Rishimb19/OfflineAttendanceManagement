@@ -1,0 +1,79 @@
+<!-- templates/tasks.html -->
+{% extends "base.html" %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+<h1>Task Management</h1>
+
+<!-- Add Task Form -->
+<div class="form-card">
+    <h3>Add New Task</h3>
+    <form method="POST" action="{{ url_for('tasks') }}">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="due_date">Due Date</label>
+            <input type="date" id="due_date" name="due_date" required>
+        </div>
+        <div class="form-group checkbox">
+            <label>
+                <input type="checkbox" name="assign_all" value="yes"> Assign to all students immediately
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Task</button>
+    </form>
+</div>
+
+<!-- Task List -->
+<h2>All Tasks</h2>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Assigned</th>
+                <th>Completed</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('task_detail', task_id=task.id) }}" class="task-link">
+                        {{ task.title }}
+                    </a>
+                </td>
+                <td>{{ task.description or '-' }}</td>
+                <td>{{ task.due_date }}</td>
+                <td>{{ task.total_assigned or 0 }}</td>
+                <td>{{ task.completed_count or 0 }}</td>
+                <td>
+                    <a href="{{ url_for('assign_task', task_id=task.id) }}" class="btn btn-sm btn-edit">Assign</a>
+                    <form method="POST" action="{{ url_for('delete_task', id=task.id) }}" style="display:inline;"
+                        onsubmit="return confirm('Delete this task?');">
+                        <button type="submit" class="btn btn-sm btn-delete">Delete</button>
+                    </form>
+                </td>
+                <td>
+                    <a href="{{ url_for('task_detail', task_id=task.id) }}" class="task-link">
+                        {{ task.title }}
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No tasks added.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

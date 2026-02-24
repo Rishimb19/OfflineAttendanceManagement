@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h1>Attendance Reports</h1>
+
+<!-- Filter Form -->
+<div class="form-card">
+    <h3>Filter by Class / Department</h3>
+    <form method="GET" action="{{ url_for('reports') }}">
+        <div class="form-row">
+            <div class="form-group half">
+                <label for="class_filter">Class</label>
+                <select id="class_filter" name="class_filter">
+                    <option value="All">All Classes</option>
+                    {% for class in classes %}
+                    <option value="{{ class }}" {% if class==selected_class %}selected{% endif %}>{{ class }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group half">
+                <label for="dept_filter">Department</label>
+                <select id="dept_filter" name="dept_filter">
+                    <option value="All">All Departments</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept }}" {% if dept==selected_dept %}selected{% endif %}>{{ dept }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+    </form>
+</div>
+
+<!-- Report Table -->
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Department</th>
+                <th>Total Days</th>
+                <th>Present</th>
+                <th>Absent</th>
+                <th>Attendance %</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in report %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.class }}</td>
+                <td>{{ row.department }}</td>
+                <td>{{ row.total }}</td>
+                <td>{{ row.present }}</td>
+                <td>{{ row.absent }}</td>
+                <td>
+                    {% if row.total > 0 %}
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ row.percent }}%;">{{ row.percent }}%</div>
+                    </div>
+                    {% else %}
+                    No records
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No students found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

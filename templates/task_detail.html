@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Task Details{% endblock %}
+{% block content %}
+<h1>Task: {{ task.title }}</h1>
+<div class="task-meta">
+    <p><strong>Due Date:</strong> {{ task.due_date }}</p>
+    <p><strong>Description:</strong> {{ task.description or 'No description' }}</p>
+</div>
+
+<div class="form-actions">
+    <a href="{{ url_for('tasks') }}" class="btn btn-secondary">← Back to Tasks</a>
+    <form method="POST" action="{{ url_for('bulk_complete_task', task_id=task.id) }}" style="display:inline;">
+        <button type="submit" class="btn btn-primary"
+            onclick="return confirm('Mark all pending students as completed?')">
+            ✅ Mark All as Completed
+        </button>
+    </form>
+</div>
+
+<h2>Student Progress</h2>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>USN</th>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Completed Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for st in student_tasks %}
+            <tr>
+                <td>{{ st.usn }}</td>
+                <td>{{ st.name }}</td>
+                <td>{{ st.class }}</td>
+                <td>{{ st.department }}</td>
+                <td>
+                    {% if st.status %}
+                    <span class="badge {{ 'badge-present' if st.status == 'Completed' else 'badge-absent' }}">
+                        {{ st.status }}
+                    </span>
+                    {% else %}
+                    <span class="badge">Not Assigned</span>
+                    {% endif %}
+                </td>
+                <td>{{ st.completed_date or '-' }}</td>
+                <td>
+                    {% if st.status == 'Pending' %}
+                    <form method="POST"
+                        action="{{ url_for('complete_task', task_id=task.id, student_id=st.student_id) }}"
+                        style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-edit">Mark Completed</button>
+                    </form>
+                    {% elif st.status == 'Completed' %}
+                    <form method="POST" action="{{ url_for('reset_task', task_id=task.id, student_id=st.student_id) }}"
+                        style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-delete">Reset</button>
+                    </form>
+                    {% else %}
+                    <form method="POST"
+                        action="{{ url_for('assign_task_to_student', task_id=task.id, student_id=st.student_id) }}"
+                        style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-primary">Assign</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No students found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
