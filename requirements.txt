@@ -1,5 +1,6 @@
 Flask==2.3.3
 Werkzeug==2.3.7
-gunicorn==20.1.0
+gunicorn==23.0.0
 psutil==5.9.4
-firebase-admin
+
+setuptools  # Add this as a safety net
