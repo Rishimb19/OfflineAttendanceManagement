@@ -12,7 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # App Initialization
 # ------------------------------
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here-change-in-production'
+app.secret_key = '2485fbd6dad2ad10d3e8ae066b635f9ca94fbd2815e275eda1c2358364530d59'
 
 DATABASE = 'database.db'
 
